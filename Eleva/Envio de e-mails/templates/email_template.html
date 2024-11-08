@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #eee; /* Cor de fundo cinza clara */
+            font-family: 'Poppins', sans-serif;
+            width: 100% !important;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            color: black;
+        }
+        table {
+            border-spacing: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 10px solid #eee;
+            border-right: 10px solid #eee;
+        }
+        
+    </style>
+</head>
+<body>
+    <center style="width: 100%; background-color: #eee; padding: 20px 0;">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="email-container">
+                <tr>
+                    <td>
+                        <h1>{{ titulo }}</h1>
+                        <div class="email-body" style="text-align: justify;">
+                            {{ corpo|safe }}
+                        </div>
+                        
+                        <p>Atenciosamente,<br>
+                            {{ remetente_nome }}
+                        </p>
+                        <div class="logos">
+                            <img src="https://i.ibb.co/6vSJdQb/logoinspired.png" alt="" style="width: 100px; margin-right: 20px;">
+
+                            <img src="https://i.ibb.co/ySC3mBf/logorecife.png" alt="" style="width: 100px;">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </center>
+</body>
+</html>

@@ -1,0 +1,142 @@
+# Ignorar diretório virtualenv
+virtualenv/
+
+# Ignorar diretório env
+env/
+
+# Ignorar pastas de configuracoes
+config/credentials/
+ONBOARDING/config/credentials/automacao-onboarding-440312-791006d38824.json
+**/credentials.json
+**/automacao-onboarding-440312-791006d38824.json
+
+# React & Node.js
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node_modules
+node_modules/
+jspm_packages/
+
+# Build Output
+dist/
+build/
+.cache/
+.temp/
+coverage/
+
+# Debug
+.vscode/
+
+# Dependency directories
+/.pnp
+.pnp.js
+
+# IDEs
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.vcxproj
+
+# Env files
+.env
+.env.*.local
+
+# npm packages
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Python
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / Packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtualenv
+venv/
+ENV/
+env/
+.venv/
+env.bak/
+env/
+Pipfile.lock
+
+# Pytest
+.cache
+
+# Django / Flask cache, sessions, static files, and media
+*.sqlite3
+media/
+staticfiles/
+static/
+
+# VS Code Python extensions
+.python-version
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# .NET
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Aa][Ll][Pp][Hh][Aa]/
+[Bb][Ee][Tt][Aa]/
+[Bb][Rr][Ee][Aa][Kk][Ii][Nn][Gg]/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+*.pidb
+*.booproj
+*.log
+
+# Visual Studio 2019+
+.vscode/
+.vscode-test/
+.vscode-server/
+.vscode-test-explorer/
+
+# Rider
+.idea/
+.idea/
+
+# DotNetCore
+project.lock.json
+project.fragment.lock.json

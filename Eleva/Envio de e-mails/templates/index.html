@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar E-mail</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Enviar Email</h1>
+    <form id="emailForm">
+        <label for="template">Escolha um template:</label>
+        <select id="template" name="template">
+            <option value="default">Nenhum template</option>
+            <option value="template1">Solicitação de Folhas A4</option>
+            <option value="template2">Template 2</option>
+            <option value="templateJohn">Checklist (Enviado por John)</option>
+            <option value="templateLeo">Checklist (Enviado por Leandreson)</option>
+        </select><br><br>
+
+        <label for="remetente_nome">Seu Nome:</label>
+        <input type="text" id="remetente_nome" name="remetente_nome" required><br>
+        <label for="remetente">Seu Email:</label>
+        <input type="email" id="remetente" name="remetente" required><br>
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" name="senha" required><br>
+        <label for="destinatario_email">Digite os e-mails dos destinatários separados por vírgula:</label>
+        <input type="text" id="destinatario_email" name="destinatario_email" required><br>
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" name="titulo" required><br>
+        <label for="corpo">Corpo:</label><br>
+        <textarea id="corpo" name="corpo" rows="4" cols="50" required></textarea><br>
+        <input type="submit" value="Enviar Email">
+    </form>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var formData = new FormData(this);
+
+            fetch('/enviar_email', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('emailForm').reset();
+                } else {
+                    alert('Erro ao enviar o email: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Erro ao enviar o email: ' + error.message);
+            });
+        });
+
+        document.getElementById('template').addEventListener('change', function() {
+            var template = this.value;
+            var remetenteNome = document.getElementById('remetente_nome');
+            var remetente = document.getElementById('remetente');
+            var senha = document.getElementById('senha');
+            var destinatarioEmail = document.getElementById('destinatario_email');
+            var titulo = document.getElementById('titulo');
+            var corpo = document.getElementById('corpo');
+
+            if (template === 'template1') {
+                remetenteNome.value = 'John Wesley Santos Alencar';
+                remetente.value = 'john.alencar@escolaeleva.com.br';
+                senha.value = '';
+                destinatarioEmail.value = 'leandreson.silva@escolaeleva.com.br, compras.recife@escolaeleva.com.br';
+                titulo.value = 'Solicitação de Resmas A4';
+                corpo.value = 'Prezados, espero que este e-mail os encontre bem.\n\nSolicito 12 resmas de papel A4 para o pedagógico, por gentileza.\n\n';
+            } else if (template === 'template2') {
+                remetenteNome.value = 'John Wesley Santos Alencar';
+                remetente.value = 'john.alencar@escolaeleva.com.br';
+                senha.value = '';
+                destinatarioEmail.value = 'leandreson.silva@escolaeleva.com.br';
+                titulo.value = 'Template 2';
+                corpo.value = 'Template 2';
+            } else if (template === 'templateJohn') {
+                remetenteNome.value = 'John Wesley Santos Alencar';
+                remetente.value = 'john.alencar@escolaeleva.com.br';
+                senha.value = '';
+                destinatarioEmail.value = 'Aldi.Pacheco@inspirededu.com, Ricardo.Frazao@inspirededu.com, leandreson.silva@escolaeleva.com.br, amanda.payne@escolaeleva.com.br, cristiano.dossantos@escolaeleva.com.br, natali.andrade@escolaeleva.com.br, karen.ribeiro@escolaeleva.com.br, cristina.veras@escolaeleva.com.br, allan.nascimento@escolaeleva.com.br, danielle.gurgel@escolaeleva.com.br ';
+                titulo.value = '[EE Recife] Checklist semanal.';
+                corpo.value = 'Prezados,\n\nEspero que esta mensagem os encontre bem.\n\nGostaria de compartilhar o link de acesso ao nosso painel do Power BI, onde vocês podem verificar o estado atual de cada sala: [Link](https://bit.ly/eepechecklist).\n\nCom satisfação, informo que todas as salas estão operacionais e funcionando normalmente.\n\nObservação: \n\nDesejo a todos um excelente final de semana!\n\nAtenciosamente,\nJohn Alencar\n';
+            } else if (template === 'templateLeo') {
+                remetenteNome.value = 'Leandreson Pessoa Francisco Silva';
+                remetente.value = 'leandreson.silva@escolaeleva.com.br';
+                senha.value = '';
+                destinatarioEmail.value = 'Aldi.Pacheco@inspirededu.com, Ricardo.Frazao@inspirededu.com, john.alencar@escolaeleva.com.br, amanda.payne@escolaeleva.com.br, cristiano.dossantos@escolaeleva.com.br, natali.andrade@escolaeleva.com.br, karen.ribeiro@escolaeleva.com.br, cristina.veras@escolaeleva.com.br, allan.nascimento@escolaeleva.com.br, danielle.gurgel@escolaeleva.com.br ';
+                titulo.value = '[EE Recife] Checklist semanal.';
+                corpo.value = 'Prezados,\n\nEspero que esta mensagem os encontre bem.\n\nGostaria de compartilhar o link de acesso ao nosso painel do Power BI, onde vocês podem verificar o estado atual de cada sala: [Link](https://bit.ly/eepechecklist).\n\nCom satisfação, informo que todas as salas estão operacionais e funcionando normalmente.\n\nObservação: \n\nDesejo a todos um excelente final de semana!\n\nAtenciosamente,\nJohn Alencar\n';
+            } else {
+                remetenteNome.value = '';
+                remetente.value = '';
+                senha.value = '';
+                destinatarioEmail.value = '';
+                titulo.value = '';
+                corpo.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

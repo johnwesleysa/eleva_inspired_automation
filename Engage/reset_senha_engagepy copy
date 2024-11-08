@@ -1,0 +1,263 @@
+import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException, TimeoutException
+import time
+import pyautogui
+import os
+
+
+CAMINHO_ARQUIVO_ENGAGE = r"C:\Users\john.alencar\Documents\GitHub\programacao\Engage\LandSchool\META QUEST - LandSchool - Engage _OLD_NEW.csv"
+
+LOGS_DIR = r'C:\Users\john.alencar\Documents\GitHub\programacao\Engage\LOGS\engage'
+NOME_ARQUIVO_LOG = r'land_verificar_new_password.txt'
+
+
+
+def save_logs(email, mensagem):
+    # Caminho para o arquivo de log dentro do diretório de logs
+    log_file = os.path.join(LOGS_DIR, NOME_ARQUIVO_LOG)
+    
+    # Abre o arquivo de log no modo de adição
+    with open(log_file, 'a') as f:
+        f.write(f'-----')
+        f.write(f'E-mail: {email}: {mensagem};')
+        f.write(f'-----\n')
+
+# Função para abrir o navegador, preencher os campos e fechar
+def realizar_cadastro(userName, email, firstName, lastName, password_new, password_old):
+    while True:    
+        # Inicializando uma nova instância do Google Chrome para cada cadastro
+        service = Service()
+        options = webdriver.ChromeOptions()
+        driver = webdriver.Chrome(service=service, options=options)
+        url = 'https://app.engagevr.io/login'
+        driver.get(url)
+        wait = WebDriverWait(driver, 10)
+
+        def verificar_email(email, password):
+            # Abrir uma nova guia
+            driver.execute_script("window.open('');")  # Abre uma nova guia em branco
+
+            # Alternar para a nova guia
+            driver.switch_to.window(driver.window_handles[1])
+
+            # Acesse uma nova URL na nova guia
+            driver.get("https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F%26ogbl%2F&emr=1&ifkv=ARpgrqcGpktLM1xXav7DhLNKZ9-hF1Jt3YkrSAjBkPYZThv5w0c3I6kQA6L7quk-0wBr8epZccbk5A&ltmpl=default&ltmplcache=2&osid=1&passive=true&rm=false&scc=1&service=mail&ss=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S369749740%3A1729603431810947&ddm=0")
+
+            try:
+                # Preenche o e-mail
+                wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="identifierId"]'))).send_keys(email)
+                driver.find_element(By.XPATH, '//*[@id="identifierNext"]/div/button/span').click()
+                time.sleep(1)
+
+                # Aguarda até aparecer o campo de senha do email
+                element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
+                time.sleep(1)
+                #clicar em password
+                wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input'))).send_keys(password)
+                #clicar em proximo ou entrar
+                driver.find_element(By.XPATH, '//*[@id="passwordNext"]/div/button/span').click()
+                time.sleep(1)
+
+                # Aguardar tela para confirmar se existe
+                try:
+                    element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="view_container"]/div/div/div[2]/div/div[2]/div/div[1]/div/div/button/span')))
+                    time.sleep(1)
+                    driver.find_element(By.XPATH, '//*[@id="view_container"]/div/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+                    time.sleep(1)
+                except TimeoutException:
+                    print("Tela de 'existe' não apareceu, seguindo para a próxima etapa.")
+
+                try:
+                    # Aguardar tela de bem-vindo
+                    try:
+                        wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="yDmH0d"]/div[1]/div[2]/div[1]/div/h1')))
+                        time.sleep(1)
+                        driver.find_element(By.XPATH, '//*[@id="confirm"]').click()
+
+                    except TimeoutException:
+                        print("Tela de bem-vindo não apareceu, seguindo para a próxima etapa.")
+
+                    time.sleep(1)
+                    # Aguardar tela "este é o Gmail"
+                    wait.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[21]/div[2]/div/div[2]/div/div/button/span[5]'))).click()
+                    time.sleep(1)
+                    driver.find_element(By.XPATH, '/html/body/div[21]/div[2]/div/div[2]/div/div/button/span[5]').click()
+                    time.sleep(1)
+
+                    # Clicar no X do tutorial
+                    time.sleep(1)
+                    pyautogui.click(384,203)
+                    time.sleep(1)
+
+
+                    # Clicar em OK
+                    wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="bubble-47"]/div/div[2]/div'))).click()
+                    time.sleep(0.5)
+
+
+                except Exception as e:
+                    # Clicar em pesquisar e pesquisar pelo e-mail de confirmação se um erro ocorrer
+                    print(f"Ocorreu um erro: {e}")
+                    
+
+            finally:
+                # Clicar no X do tutorial
+                time.sleep(1)
+                pyautogui.click(384,203)
+                time.sleep(2)
+            
+                search_input = driver.find_element(By.XPATH, '//*[@id="gs_lc50"]/input[1]')
+                time.sleep(2)
+                search_input.send_keys('Welcome to ENGAGE! Please verify your email address.')
+                time.sleep(1)
+                search_input.send_keys(Keys.ENTER)
+                time.sleep(1)
+
+                # clicar na posição especifica do e-mail
+                time.sleep(1)
+                pyautogui.click(457, 328)
+                time.sleep(1)
+
+                # fechar notificação
+                pyautogui.click(882, 683)
+                time.sleep(1)
+
+                # clicar para verificar o e-mail
+                pyautogui.click(578, 760)
+                time.sleep(0.8)
+                pyautogui.click(575,798)
+                time.sleep(10)
+                #save_logs(email)
+
+                # Fechar o navegador
+                # Captura a tela e salva como imagem
+                #screenshot = pyautogui.screenshot()
+                time.sleep(0.5)
+                #save_screenshot(screenshot, CAMINHO_SCREENSHOT, email)
+                time.sleep(2)
+                driver.close()
+                time.sleep(1)
+                driver.switch_to.window(driver.window_handles[0])
+                driver.get(url)
+                element = wait.until(EC.visibility_of_element_located((By.ID, 'login-email')))
+                time.sleep(1)  # Aguarda 2 segundos antes de reiniciar o navegador para o próximo registro
+           
+
+        #0-------------------------------------------------------------------------------------------------------------)
+        
+
+        #aguarda a pagina carregar
+        element = wait.until(EC.visibility_of_element_located((By.ID, 'login-email')))
+        # Preenche o formulário de registro
+        try:
+            #clicar em e-mail
+            wait.until(EC.visibility_of_element_located((By.ID, 'login-email'))).send_keys(email)
+
+            #clicar em password
+            wait.until(EC.visibility_of_element_located((By.ID, 'login-password'))).send_keys(password_old)
+
+            #clciar em log in
+            time.sleep(1)
+            wait.until(EC.visibility_of_element_located((By.ID, 'login-signin'))).click()
+
+            #//*[@id="loginErrors"]/div/div
+
+            try:
+                element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="authApp"]/div/div[1]/div[1]/div/span')))
+                
+                verificar_email(email, password_new)
+
+                #clicar em e-mail
+                wait.until(EC.visibility_of_element_located((By.ID, 'login-email'))).send_keys(email)
+
+                #clicar em password
+                wait.until(EC.visibility_of_element_located((By.ID, 'login-password'))).send_keys(password_old)
+
+                #clciar em log in
+                time.sleep(1)
+                wait.until(EC.visibility_of_element_located((By.ID, 'login-signin'))).click()
+                
+                # #clicar em password
+                # wait.until(EC.visibility_of_element_located((By.ID, 'login-password'))).clear()
+                # wait.until(EC.visibility_of_element_located((By.ID, 'login-password'))).send_keys(password_new)
+            except Exception:
+                print("E-mail verificado")
+                try:
+                    element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="loginErrors"]/div/div')))
+                    save_logs(email,'Senha nova')
+                    print("Senha já foi alterada")
+                    continue
+                except Exception:
+                    print("Realizando reset de senha")
+                    
+            
+
+            time.sleep(5)
+            pyautogui.click(312,935)
+            time.sleep(0.5)
+            pyautogui.click(338,955)
+            
+
+            try:
+                element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="__layout"]/div/div[1]/main/div/div[2]/div/div[1]/h6')))
+                wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="__layout"]/div/div[1]/main/div/div[2]/div/div[2]/div[2]/div/button'))).click()
+            except Exception:
+                print("Não encontrou tela de learn more about privacy and security")
+
+            #aguardar aparecer settings
+            element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="profile-settings"]')))
+            time.sleep(1)
+            #clicar em settins
+            wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="profile-settings"]'))).click()
+
+            #aguarda aparecer change password e clica logo em seguida
+            element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="web-container"]/div[2]/main/div/div/div/div[1]/ul/a[2]/span')))
+            time.sleep(1)
+            #clica em change password
+            wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="web-container"]/div[2]/main/div/div/div/div[1]/ul/a[2]/span'))).click()
+
+            #aguarda aparecer current password
+            element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="current_password-password"]')))
+            time.sleep(1)
+            #clica e digita em current password OLD
+            wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="current_password-password"]'))).send_keys(password_old)
+            time.sleep(0.5)
+
+            #clica em new password e digita nova senha
+            wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="new_password-password"]'))).send_keys(password_new)
+            time.sleep(0.5)
+            #clicar em confirm new password
+            wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="password_confirmation-password"]'))).send_keys(password_new)
+            time.sleep(0.5)
+
+            #clicar em change password
+            wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="web-container"]/div[2]/main/div/div/div/div[2]/div/div/div/div/form/fieldset/div/div[4]/button'))).click()
+            
+
+            element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="login-email"]')))
+            
+            time.sleep(2)
+        finally:
+            # Fechar o navegador
+            break
+            driver.quit()
+            time.sleep(0.5)  # Aguarda 2 segundos antes de reiniciar o navegador para o próximo registro
+
+# Lendo o arquivo de texto e processando cada linha
+with open(CAMINHO_ARQUIVO_ENGAGE) as arquivo:
+    for linha in arquivo:
+        userName = linha.split(',')[1]
+        email = linha.split(',')[0]
+        firstName = linha.split(',')[2]
+        lastName = linha.split(',')[3]
+        password_new = linha.split(',')[4]
+        password_old = linha.split(',')[5]
+
+        # Realiza o cadastro para a linha atual
+        realizar_cadastro(userName, email, firstName, lastName, password_new, password_old)
